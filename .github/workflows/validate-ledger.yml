@@ -1,0 +1,40 @@
+name: validate-ledger
+on: [push, pull_request]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate ledger JSONL shape + privacy
+        run: |
+          python - <<'EOF'
+          import json, re, sys
+          required = {"id", "kind", "code", "ts", "note", "source"}
+          kinds = {"gap", "lesson_confirmed", "event"}
+          pii = re.compile(r"(?i)(outlook|gmail|childrenscouncil|[\w.]+@[\w.]+|romeire997|password|api[_-]?key|auth\s+token|secret|\d{3}-\d{2}-\d{4})")
+          bad = 0
+          with open("ledger.jsonl", encoding="utf-8") as f:
+              for i, line in enumerate(f, 1):
+                  line = line.strip()
+                  if not line:
+                      continue
+                  try:
+                      obj = json.loads(line)
+                  except Exception as e:
+                      print(f"line {i}: invalid JSON: {e}"); bad += 1; continue
+                  missing = required - set(obj)
+                  if missing:
+                      print(f"line {i}: missing {missing}"); bad += 1
+                  if obj.get("kind") not in kinds:
+                      print(f"line {i}: bad kind {obj.get('kind')}"); bad += 1
+                  if pii.search(obj.get("note", "")) or pii.search(obj.get("code", "")):
+                      print(f"line {i}: possible PII leak: {obj.get('note','')[:80]}"); bad += 1
+          if bad:
+              print(f"VALIDATION FAILED: {bad} issue(s)"); sys.exit(1)
+          print("ledger OK")
+          EOF
+      - name: Python syntax check of sync script
+        run: python -m py_compile sync_ledger.py && echo "sync_ledger.py OK"

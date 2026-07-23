@@ -1,0 +1,44 @@
+id,kind,code,ts,classification,note,source
+RIL-014,gap,GAP_CONFIRMED,2026-07-16,,"---
+status: PROMOTED
+recurrences: 3
+false_gap: false
+first_seen: 2026-07-16
+promoted_to: hermes-path-safety
+---
+# CONFIRMED GAP — msys/Windows path translation in `patch`/`write_file` - **Fingerprint:** `file + patch + write_file | ASSUMPTION_LOCK | msys-path-translation | assumed /c/ maps to C:\`
+- **Date:** 2026-07-16
+- **Classification:** TOOL_MISUSE + ASSUMPTION_LOCK
+- **Verdict:** CONFIRMED_GAP (external signal)
+- **Evidence:** - `write_file` with path `/c/Users/rpresendieu/...` returned",migrate-gaps
+RIL-001,event,RILP_INSTALLED,2026-07-16T03:15:57Z,,RILP v1.1 spec saved; scaffolding created under ~/.hermes/learning and ~/.hermes/skills,migrate-events.jsonl
+RIL-002,event,TASK_STARTED,2026-07-16T03:28:20.145066+00:00,,verify HERMES_HOME path fix,migrate-events.jsonl
+RIL-003,event,TASK_STARTED,2026-07-16T03:35:02.056528+00:00,,final verification of cron continuity,migrate-events.jsonl
+RIL-004,event,TASK_STARTED,2026-07-16T03:37:05.972964+00:00,,verify deterministic path,migrate-events.jsonl
+RIL-005,event,SKILL_PROMOTED,2026-07-16T03:43:22.250204+00:00,,hermes-path-safety from gap_2026-07-16 (3rd recurrence),migrate-events.jsonl
+RIL-006,event,GAP_OBSERVED,2026-07-16T03:43:22.423417+00:00,,post-promotion audit: path gap now has active-skill enforcement,migrate-events.jsonl
+RIL-007,event,TASK_STARTED,2026-07-16T16:00:52.686319+00:00,,loopy daily slice,migrate-events.jsonl
+RIL-008,event,GAP_OBSERVED,2026-07-16T16:05:47.272342+00:00,,loop bookkeeping (PROGRESS.md/reviews) is non-atomic with loop.py merge; an interrupted run can leave a Progress Log entry with Next steps still unchecked / status stale (DESIGN_GAP). Consider making brief/merge also touch PROGRESS.md or wrapping bookkeeping in the same transaction.,migrate-events.jsonl
+RIL-009,event,TASK_STARTED,2026-07-17T16:00:49.940210+00:00,,loopy daily slice,migrate-events.jsonl
+RIL-010,event,TASK_STARTED,2026-07-18T16:00:28.731661+00:00,,loopy daily slice,migrate-events.jsonl
+RIL-011,event,TASK_STARTED,2026-07-19T16:00:56.286731+00:00,,loopy daily slice,migrate-events.jsonl
+RIL-012,event,PREFLIGHT_COMPLETED/GAP_OBSERVED,2026-07-20,,Evolved OmniCRM into PCE: projects(26 PCE fields)+milestones(weight-driven completion)+immutable journal. 25 projects seeded. 15/15 ad-hoc verify passed.,migrate-events.jsonl
+RIL-013,event,TASK_STARTED,2026-07-20T16:01:01.019175+00:00,,loopy daily slice,migrate-events.jsonl
+RIL-015,event,TASK_STARTED,2026-07-20T17:30:00+00:00,,"build OmniCRM desktop launcher (pythonw, no-console) + Desktop .lnk shortcut",backfill-2026-07-20
+RIL-016,event,GAP_OBSERVED,2026-07-20T17:32:00+00:00,,RILP ledger not appended during feature work — discipline gap; ledger fell silent after bridge build,backfill-2026-07-20
+RIL-017,event,TASK_STARTED,2026-07-20T17:45:00+00:00,,"connect RILP to OmniCRM: added immutable 'rilp' entity, rilp_bridge.py, /api/rilp endpoints; mirrored 14 existing events+gap",backfill-2026-07-20
+RIL-018,event,TASK_STARTED,2026-07-20T18:10:00+00:00,,"import contact batch ( + ) into OmniCRM contacts, deduped by email",backfill-2026-07-20
+RIL-019,event,TASK_STARTED,2026-07-20T18:40:00+00:00,,"import contact batch from contacts.csv into OmniCRM, deduped vs set",backfill-2026-07-20
+RIL-020,event,GAP_CONFIRMED,2026-07-20T18:50:00+00:00,,"RILP ledger silence: no automated enforcement that events are logged per task; bridge is write-only on demand, not triggered",backfill-2026-07-20
+RIL-021,event,GAP_CONFIRMED,2026-07-20T18:55:00+00:00,,"RILP enforcement gap: model ships features but skips ledger appends for multiple turns; ledger went silent after bridge build. Fix: rilp_backfill.py + rilp_health.py. Lesson: logging must be enforced mechanically, not by intention.",manual-final
+,GAP_CONFIRMED,win_local_dictation_gotchas,2026-07-21T22:46:33Z,,Building local dictation on Windows: faster-whisper cpu_threads goes in WhisperModel() ctor not .transcribe(); never name module typing.py (shadows stdlib); sounddevice WASAPI needs blocksize=0; quiet mic needs RMS normalize; Ollama bin not on PATH by default.,fluidvoice-win build
+rilp_20260722_dd258f,lesson_confirmed,global-keyboard-hook-kills-all-input,2026-07-22,,"When keyboard works at login but dies after logon AND on-screen keyboard also fails, suspect a session-startup global keyboard hook (WH_KEYBOARD_LL), not hardware or drivers.",nano_session_20260722
+rilp_20260722_a476cb,lesson_confirmed,startup-autorun-spawn-storm,2026-07-22,,Fan loud + CPU 100% + process count steadily climbing usually means a Startup autorun launcher that spawns children in a loop without dedup-checking. Kill parent + sweep children + disable Startup entry; a plain reboot alone will not fix it.,nano_session_20260722
+rilp_20260723_996627,gap,write_file_timeout_large_content,2026-07-23T20:10:00Z,,write_file with a single large (~10K+ token) content payload can time out the stream and silently drop. Keep per-call args under ~8K tokens; split large files into smaller write_file calls or build up via patch.,buildgrid-ai build
+rilp_20260723_efa68c,gap,astar_infinite_loop_missing_closed_set,2026-07-23T20:15:00Z,,A* pathfinding with a linear O(n^2) open-set scan and no closed set can hang (never terminate) on large grids. Verified by treating the test binary as EXTERNAL_SIGNAL — `node --test` timed out. Fix: binary min-heap + Uint8Array closed set; bounded termination.,buildgrid-ai build
+rilp_20260723_2662c9,gap,astar_treats_exit_as_obstacle,2026-07-23T20:18:00Z,,Egress pathfinding blocked ALL components — including the exit goal — so A* could never reach the goal cell (returned null even when a path existed). Fix: exclude exit-door components from the obstacle grid; destination is the exit's boundary.,buildgrid-ai build
+rilp_20260723_96b97a,gap,geometry_rect_format_mismatch,2026-07-23T20:20:00Z,,"centerOf() expects geometry-format rects {x,y,w,h}; passing component-format {x,y,width,height} yields NaN goals and A* returns null. Always run components through rectOf() before geometric helpers. Caught only because a test asserted non-null.",buildgrid-ai build
+rilp_20260723_00ee78,lesson_confirmed,rule_fires_only_on_large_enough_geometries,2026-07-23T20:22:00Z,,"A rule can be CORRECT yet untriggerable on a small training plan. NFPA 10's 75 ft extinguisher travel radius exceeds a 60x40 ft plan's diagonal (~72 ft), so the rule can never fire there. Do not 'fix' the rule — verify with a geometry large enough to exercise it (test used 120x80 ft). Distinguish rule-bug from test-scale-bug.",buildgrid-ai build
+rilp_20260723_d8756f,lesson_confirmed,scaffold_green_is_not_correctness,2026-07-23T20:25:00Z,,"A passing scaffold (e.g. 6/6 tests, app runs) is SELF_SIGNAL of completeness, not evidence of correctness. Treat green as noise; probe for magic numbers, inert components, missing units. The ChatGPT BuildGrid scaffold passed but used SNAP=16 px, distance thresholds 52/250 px, 4 of 9 components inert, zero real units.",buildgrid-ai build
+rilp_20260723_c9a76f,gap,rilp_ledger_silence_on_feature_work,2026-07-23T20:28:00Z,,"CONFIRMED recurrence: even with the OmniCRM bridge built, the model shipped a full multi-file feature (BuildGrid AI) with ZERO events.jsonl appends and STALE rilp_state.json (last_task 16:00 vs commit 20:28). Logging must be mechanically enforced, not intended. This is the 2nd+ confirmed recurrence of RIL-021.",buildgrid-ai build
+rilp_20260723_541427,gap,zztakeoff_complementarity_unverified,2026-07-23T20:30:00Z,,BLIND SPOT: asserted BuildGrid AI (upstream planning/education) is 'complementary' to zzTakeoff (downstream takeoff/estimating) without verifying zzTakeoff's actual API/export surface. An UNKNOWN_UNKNOWN per RILP — Blind Spot Scanner is mandatory next. Do not present strategic complementarity as fact without checking the other product's integration surface.,buildgrid-ai build
