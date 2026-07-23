@@ -8,6 +8,12 @@ theoretical advice.
 This repo is the *export* of the RILP self-audit twin. It is intentionally small
 and dependency-free so it can be dropped into any project or read in 5 minutes.
 
+![RILP lifecycle — observation to evidence to doctrine, with a promotion gate](docs/images/lifecycle.png)
+
+*The lifecycle every entry passes through: a finding is only a **confirmed gap** with
+external signal, and only becomes a **reusable skill** when Confirmed + reusable +
+evidence-backed + applied ≥ 2×. This ledger is the sanitized public export of that process.*
+
 ## What's inside
 - `ledger.jsonl` — canonical append-only ledger, one event per line (32 entries).
 - `ledger.csv` — the same data as a spreadsheet for quick scanning.
@@ -57,6 +63,25 @@ applied ≥ 2×.
   tokens; split or use `patch`. (`write_file_timeout_large_content`)
 - **Ledger silence is a recurring gap** — logging must be mechanically enforced,
   not intended. (`rilp_ledger_silence_on_feature_work`)
+
+## Project Status
+
+**Maintained.** This is a live, append-only export that grows as new confirmed
+lessons are captured during real agent builds. It is a documentation/data artifact,
+not an application — there is nothing to "run" beyond `sync_ledger.py`, which
+regenerates the public files from the authoritative store.
+
+## Human and AI Contributions
+
+**Ross's role:** originated RILP (the Recursive Intelligence Learning Protocol /
+Dark-Mirror self-audit), defined what counts as evidence vs. self-signal, set the
+promotion bar for turning a gap into a reusable skill, and directs what gets shared
+publicly.
+
+**AI-agent role:** applies the protocol during real builds, records each edge case
+and confirmed lesson, and runs `sync_ledger.py` to produce this sanitized export.
+Every entry corresponds to an actual failure or verified lesson — nothing here is
+invented for illustration.
 
 ## License
 MIT — free to use, fork, and extend. The lessons here are shared so the next
